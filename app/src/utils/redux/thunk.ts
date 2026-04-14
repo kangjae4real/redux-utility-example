@@ -86,12 +86,12 @@ async function getApiPollingResponse<ResponseType>({
 }) {
   const pollingPage = window.location.pathname;
   let pollResponse;
-  let pollFinishied = false;
+  let pollFinished = false;
 
-  while (!pollFinishied || !pollResponse) {
+  while (!pollFinished || !pollResponse) {
     const poll = getResponseFunction();
 
-    const pollDealy = new Promise((resolve) => setTimeout(resolve, minPollingInterval));
+    const pollDelay = new Promise((resolve) => setTimeout(resolve, minPollingInterval));
 
     pollResponse = await poll;
 
@@ -101,9 +101,9 @@ async function getApiPollingResponse<ResponseType>({
         (pollResponse.data as ResponseTypeWithPendingData<ResponseType>).is_pending);
 
     if (isPolling && getKeepPollingFunction(getState()) && window.location.pathname === pollingPage) {
-      await pollDealy;
+      await pollDelay;
     } else {
-      pollFinishied = true;
+      pollFinished = true;
       break;
     }
   }
