@@ -17,11 +17,6 @@ type PayloadValidationFunction<Payload> = (payload: Payload) => boolean;
 
 interface CommonMakeThunkActionProps<PayloadType> {
   payloadValidationFunction?: PayloadValidationFunction<PayloadType>;
-  successSnackbarMessage?: string;
-  getSuccessSnackbarMessage?: (props: { state: RootState; payload: PayloadType }) => string;
-  useErrorSnackbar?: boolean;
-  errorSnackbarMessage?: string;
-  getErrorSnackbarMessage?: (props: { state: RootState; payload: PayloadType; error: unknown }) => string;
   useApiPolling?: boolean;
   getKeepPollingFunction?: (state: RootState, payload: PayloadType) => boolean;
   minPollingInterval?: number;
@@ -30,12 +25,7 @@ interface CommonMakeThunkActionProps<PayloadType> {
 export type GenericThunkAction = ThunkAction<void, RootState, unknown, AnyAction>;
 
 async function makeApiCallAndFetchActions<PayloadType, ResponseType, ActionResponseType>({
-  successSnackbarMessage,
-  useErrorSnackbar,
-  errorSnackbarMessage,
-  getErrorSnackbarMessage,
   useApiPolling,
-  getSuccessSnackbarMessage,
   handleApiCall,
   getKeepPollingFunction,
   getDataFromApiResponse,
@@ -46,11 +36,6 @@ async function makeApiCallAndFetchActions<PayloadType, ResponseType, ActionRespo
   minPollingInterval,
 }: Pick<
   CommonMakeThunkActionProps<PayloadType>,
-  | "successSnackbarMessage"
-  | "getSuccessSnackbarMessage"
-  | "useErrorSnackbar"
-  | "errorSnackbarMessage"
-  | "getErrorSnackbarMessage"
   | "useApiPolling"
   | "getKeepPollingFunction"
   | "minPollingInterval"
@@ -79,18 +64,8 @@ async function makeApiCallAndFetchActions<PayloadType, ResponseType, ActionRespo
       : getApiResponse(handleApiCall));
 
     dispatch(fetchSuccess(getDataFromApiResponse(response)));
-
-    if (typeof getSuccessSnackbarMessage !== "undefined" || typeof successSnackbarMessage !== "undefined") {
-      const successMessage = getSuccessSnackbarMessage
-        ? getSuccessSnackbarMessage({ state: getState(), payload })
-        : successSnackbarMessage;
-    }
   } catch (error: unknown) {
-    const errorMessage = getErrorSnackbarMessage
-      ? getErrorSnackbarMessage({ state: getState(), payload, error })
-      : errorSnackbarMessage;
-
-    handleAxiosError(error, dispatch, fetchFailure, { useErrorSnackbar, errorSnackbarMessage: errorMessage });
+    handleAxiosError(error, dispatch, fetchFailure);
   }
 }
 

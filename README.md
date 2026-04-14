@@ -175,8 +175,6 @@ export const fetchNoticeListThunk = makeFetchMoreListThunkAction<NoticeResponse,
 | `payloadValidationFunction` | `false` 반환 시 API 호출을 건너뜀 |
 | `useApiPolling` | 응답이 `204` 이거나 `is_pending: true`이면 재요청 (기본 3초 간격) |
 | `getKeepPollingFunction` | 폴링 지속 여부를 state 기반으로 제어 |
-| `successSnackbarMessage` | 성공 시 스낵바 메시지 |
-| `useErrorSnackbar` | 실패 시 스낵바 표시 여부 |
 
 ---
 
